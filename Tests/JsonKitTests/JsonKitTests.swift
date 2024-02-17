@@ -49,10 +49,31 @@ final class JsonKitTests: XCTestCase {
         }
     }
 
+    func testSetJSONValue() {
+        let jsonString = "{\"name\": \"John\", \"age\": 30, \"city\": \"New York\"}"
+
+        // Test setting a new value for the "age" key
+        if let updatedJsonString = set(in: jsonString, forKey: "age", value: 31) {
+            let expectedUpdatedJsonString = "{\"name\": \"John\", \"age\": 31, \"city\": \"New York\"}"
+            XCTAssertEqual(updatedJsonString, expectedUpdatedJsonString, "Failed to set a new value for the \"age\" key.")
+        } else {
+            XCTFail("Failed to update JSON string.")
+        }
+
+        // Test setting a new value for a non-existing key
+        if let updatedJsonString = set(in: jsonString, forKey: "salary", value: 50000) {
+            let expectedUpdatedJsonString = "{\"name\": \"John\", \"age\": 30, \"city\": \"New York\", \"salary\": 50000}"
+            XCTAssertEqual(updatedJsonString, expectedUpdatedJsonString, "Failed to set a new value for a non-existing key.")
+        } else {
+            XCTFail("Failed to update JSON string.")
+        }
+    }
+
     static var allTests = [
         ("testValidJSON", testValidJSON),
         ("testInvalidJSON", testInvalidJSON),
         ("testGenericParameterValue", testGenericParameterValue),
         ("testNonGenericParameterValue", testNonGenericParameterValue),
+        
     ]
 }

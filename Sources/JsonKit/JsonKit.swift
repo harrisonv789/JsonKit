@@ -46,3 +46,21 @@ func get<T>(from json: String, key: String, defaultValue: T? = nil) -> T? {
 
     return defaultValue // Default case, should not reach here
 }
+
+func set(in json: String, forKey key: String, value: Any) -> String? {
+    guard var jsonDictionary = try? JSONSerialization.jsonObject(with: Data(json.utf8), options: []) as? [String: Any] else {
+        return nil // Failed to deserialize the JSON string
+    }
+
+    jsonDictionary[key] = value
+
+    do {
+        let updatedJsonData = try JSONSerialization.data(withJSONObject: jsonDictionary, options: [])
+        guard let updatedJsonString = String(data: updatedJsonData, encoding: .utf8) else {
+            return nil // Failed to convert data back to string
+        }
+        return updatedJsonString
+    } catch {
+        return nil // Error serializing the updated JSON dictionary
+    }
+}
