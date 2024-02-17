@@ -1,8 +1,10 @@
-// The Swift Programming Language
-// https://docs.swift.org/swift-book
+// Created by: Harrison Verrios, 2024
 
 import Foundation
 
+/// Check if a given string is a valid JSON
+/// - Parameter json: The JSON string to be validated
+/// - Returns: A boolean value indicating whether the given string is a valid JSON
 func isValid (_ json: String) -> Bool {
     if let jsonData = json.data(using: .utf8) {
         do {
@@ -15,6 +17,12 @@ func isValid (_ json: String) -> Bool {
     return false
 }
 
+/// Fetch a value from a JSON string
+/// - Parameters:
+///     - json: The JSON string to fetch the value from
+///     - key: The key to fetch the value for
+///     - defaultValue: The default value to return if the key is not found or the value cannot be cast to the expected type
+/// - Returns: The value for the given key, or the default value if the key is not found or the value cannot be cast to the expected type
 func get(from json: String, key: String, defaultValue: Any? = nil) -> Any? {
     guard let data = json.data(using: .utf8) else {
         return defaultValue // Unable to convert the string to data
@@ -31,6 +39,13 @@ func get(from json: String, key: String, defaultValue: Any? = nil) -> Any? {
     return defaultValue // Default case, should not reach here
 }
 
+// Document the function below
+/// Fetch a value from a JSON string
+/// - Parameters:
+///     - json: The JSON string to fetch the value from
+///     - key: The key to fetch the value for
+///     - defaultValue: The default value to return if the key is not found or the value cannot be cast to the expected type
+/// - Returns: The value for the given key, or the default value if the key is not found or the value cannot be cast to the expected type
 func get<T>(from json: String, key: String, defaultValue: T? = nil) -> T? {
     guard let data = json.data(using: .utf8) else {
         return defaultValue // Unable to convert the string to data
@@ -47,6 +62,12 @@ func get<T>(from json: String, key: String, defaultValue: T? = nil) -> T? {
     return defaultValue // Default case, should not reach here
 }
 
+/// Set a value in a JSON string
+/// - Parameters:
+///     - json: The JSON string to set the value in
+///     - key: The key to set the value for
+///     - value: The value to set for the given key
+/// - Returns: The updated JSON string with the new value set for the given key
 func set(in json: String, forKey key: String, value: Any) -> String? {
     guard var jsonDictionary = try? JSONSerialization.jsonObject(with: Data(json.utf8), options: []) as? [String: Any] else {
         return nil // Failed to deserialize the JSON string
