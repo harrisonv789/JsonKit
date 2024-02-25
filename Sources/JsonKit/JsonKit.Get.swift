@@ -11,8 +11,9 @@ import Foundation
 ///     - dictionary: The dictionary to retrieve the value from.
 ///     - key: The key to search for in the dictionary.
 ///     - defaultValue: The default value to return if the key is not found or if an error occurs during retrieval.
+///     - enableRecursion: A flag to enable or disable recursion when traversing nested dictionaries.
 /// - Returns: The value associated with the key, or the default value if the key is not found or if an error occurs.
-func get<T> (from dictionary: [String: Any], key: String, defaultValue: T? = nil) -> T? {
+func get<T> (from dictionary: [String: Any], key: String, defaultValue: T? = nil, enableRecursion: Bool = true) -> T? {
     
     // Check that the dictionary exists
     if dictionary.isEmpty {
@@ -21,7 +22,7 @@ func get<T> (from dictionary: [String: Any], key: String, defaultValue: T? = nil
 
     // Split the key based on the '.' character and get the first element of the array
     let keys = key.split(separator: ".")
-    let firstKey = String(keys[0])
+    let firstKey = enableRecursion ? String(keys[0]) : key
     
     // Check if the key exists
     guard let value = dictionary[firstKey] else {
@@ -29,7 +30,7 @@ func get<T> (from dictionary: [String: Any], key: String, defaultValue: T? = nil
     }
     
     // Check if there is no looping keys
-    if keys.count == 1 {
+    if keys.count == 1 || !enableRecursion {
         return value as? T
     }
     
@@ -53,16 +54,17 @@ func get<T> (from dictionary: [String: Any], key: String, defaultValue: T? = nil
 ///     - json: The JSON string to fetch the value from
 ///     - key: The key to fetch the value for
 ///     - defaultValue: The default value to return if the key is not found or the value cannot be cast to the expected type
+///     - enableRecursion: A flag to enable or disable recursion when traversing nested dictionaries.
 /// - Returns: The value for the given key, or the default value if the key is not found
-func get<T> (from json: String, key: String, defaultValue: T? = nil) -> T? {
+func get<T> (from json: String, key: String, defaultValue: T? = nil, enableRecursion: Bool = true) -> T? {
 
     // Convert to a dictionary
-    guard let jsonDictionary = fromJson(from: json) else {
+    guard let dictionary = fromJson(from: json) else {
         return defaultValue
     }
 
     // Return the value from the dictionary
-    return get(from: jsonDictionary, key: key, defaultValue: defaultValue)
+    return get(from: dictionary, key: key, defaultValue: defaultValue, enableRecursion: enableRecursion)
 }
 
 /// Returns the keys of a given dictionary. This is a unique array
@@ -84,10 +86,10 @@ func getKeys (from dictionary: [String: Any]) -> [String] {
 func getKeys (from json: String) -> [String] {
 
     // Convert to a dictionary
-    guard let jsonDictionary = fromJson(from: json) else {
+    guard let dictionary = fromJson(from: json) else {
         return []
     }
 
     // Return the converted dictionary keys
-    return getKeys(from: jsonDictionary)
+    return getKeys(from: dictionary)
 }

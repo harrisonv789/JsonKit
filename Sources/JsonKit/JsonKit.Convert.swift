@@ -27,3 +27,25 @@ func fromJson (from json: String) -> [String : Any]? {
         return nil
     }
 }
+
+/// Converts a dictionary of type [String: Any] to a JSON string.
+/// If the dictionary is invalid, the method will return nil.
+/// - Parameters:
+///     - dictionary: The dictionary to be converted.
+/// - Returns: The JSON string representation of the dictionary, or nil if the dictionary is invalid.
+func toJson (from dictionary: [String: Any]) -> String? {
+    
+    do {
+        // Try to serialize the dictionary to a valid JSON string
+        let data = try JSONSerialization.data(withJSONObject: dictionary, options: [])
+        guard let json = String(data: data, encoding: .utf8) else {
+            return nil
+        }
+        return json
+    }
+    
+    // Catch any conversion issues
+    catch {
+        return nil
+    }
+}
