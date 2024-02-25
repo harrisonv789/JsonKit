@@ -1,6 +1,8 @@
 # JsonKit
 A Swift library that makes reading and writing JSON data objects in Swift and converting to the appropriate Swift data objects easy.
 
+[![Swift Package Index](https://img.shields.io/badge/Swift_Package_Index-JsonKit-blue.svg)](https://swiftpackageindex.com/harrisonv789/JsonKit)
+
 ---
 
 #### Reading Data

@@ -2,64 +2,15 @@
 
 import Foundation
 
-/// Check if a given string is a valid JSON
-/// - Parameter json: The JSON string to be validated
+/// Check if a given string is a valid JSON and returns the flag. This
+/// will also determine if it can be deserialized into a standard dictionary.
+/// - Parameters
+///     - json: The JSON string to be validated
 /// - Returns: A boolean value indicating whether the given string is a valid JSON
 func isValid (_ json: String) -> Bool {
-    if let jsonData = json.data(using: .utf8) {
-        do {
-            _ = try JSONSerialization.jsonObject(with: jsonData, options: [])
-            return true
-        } catch {
-            return false
-        }
-    }
-    return false
-}
-
-/// Fetch a value from a JSON string
-/// - Parameters:
-///     - json: The JSON string to fetch the value from
-///     - key: The key to fetch the value for
-///     - defaultValue: The default value to return if the key is not found or the value cannot be cast to the expected type
-/// - Returns: The value for the given key, or the default value if the key is not found or the value cannot be cast to the expected type
-func get(from json: String, key: String, defaultValue: Any? = nil) -> Any? {
-    guard let data = json.data(using: .utf8) else {
-        return defaultValue // Unable to convert the string to data
-    }
-
-    do {
-        if let jsonDictionary = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-            return jsonDictionary[key]
-        }
-    } catch {
-        return defaultValue // Error deserializing JSON
-    }
-
-    return defaultValue // Default case, should not reach here
-}
-
-// Document the function below
-/// Fetch a value from a JSON string
-/// - Parameters:
-///     - json: The JSON string to fetch the value from
-///     - key: The key to fetch the value for
-///     - defaultValue: The default value to return if the key is not found or the value cannot be cast to the expected type
-/// - Returns: The value for the given key, or the default value if the key is not found or the value cannot be cast to the expected type
-func get<T>(from json: String, key: String, defaultValue: T? = nil) -> T? {
-    guard let data = json.data(using: .utf8) else {
-        return defaultValue // Unable to convert the string to data
-    }
-
-    do {
-        if let jsonDictionary = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-            return jsonDictionary[key] as? T
-        }
-    } catch {
-        return defaultValue // Error deserializing JSON
-    }
-
-    return defaultValue // Default case, should not reach here
+    
+    // Convert the data to a dictionary and return whether the value is nil
+    return fromJson(from: json) != nil
 }
 
 /// Set a value in a JSON string

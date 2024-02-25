@@ -15,40 +15,40 @@ final class JsonKitTests: XCTestCase {
         XCTAssertFalse(isValid(invalidJSONString), "Expected an invalid JSON string")
     }
 
-    func testGenericParameterValue() {
-        let jsonString = "{\"name\": \"John\", \"age\": 30, \"city\": \"New York\"}"
+    func testGetFromJSON() {
+        let jsonString = "{\"name\": \"John\", \"age\": 30, \"address\": {\"city\": \"New York\"}}"
 
-        // Test fetching and casting to Int
-        if let age: Int = get(from: jsonString, key: "age") {
-            XCTAssertEqual(age, 30, "Failed to fetch and cast age from JSON (Generic)")
-        } else {
-            XCTFail("Unable to retrieve or cast age from JSON (Generic)")
-        }
-
-        // Test fetching and casting to String
+        // Test fetching an existing key
         if let name: String = get(from: jsonString, key: "name") {
-            XCTAssertEqual(name, "John", "Failed to fetch and cast name from JSON (Generic)")
+            XCTAssertEqual(name, "John", "Failed to fetch value for existing key")
         } else {
-            XCTFail("Unable to retrieve or cast name from JSON (Generic)")
-        }
-    }
-
-    func testNonGenericParameterValue() {
-        let jsonString = "{\"name\": \"John\", \"age\": 30, \"city\": \"New York\"}"
-
-        // Test fetching and casting to Int
-        if let age = get(from: jsonString, key: "age") as? Int {
-            XCTAssertEqual(age, 30, "Failed to fetch and cast age from JSON (Non-Generic)")
-        } else {
-            XCTFail("Unable to retrieve or cast age from JSON (Non-Generic)")
+            XCTFail("Unable to retrieve value for existing key")
         }
 
-        // Test fetching and casting to String
-        if let name = get(from: jsonString, key: "name") as? String {
-            XCTAssertEqual(name, "John", "Failed to fetch and cast name from JSON (Non-Generic)")
+        // Test fetching a non-existing key
+        let nonExistingKey: String? = get(from: jsonString, key: "salary")
+        XCTAssertNil(nonExistingKey, "Expected nil value for non-existing key")
+
+        // Test fetching a nested key
+        if let city: String = get(from: jsonString, key: "address.city") {
+            XCTAssertEqual(city, "New York", "Failed to fetch value for nested key")
         } else {
-            XCTFail("Unable to retrieve or cast name from JSON (Non-Generic)")
+            XCTFail("Unable to retrieve value for nested key")
         }
+
+        // Test fetching a nested key with non-existing intermediate key
+        let nonExistingNestedKey: String? = get(from: jsonString, key: "address.street")
+        XCTAssertNil(nonExistingNestedKey, "Expected nil value for non-existing nested key")
+
+        // Test fetching a key with default value
+        let defaultValue: Int = 0
+        let age: Int = get(from: jsonString, key: "age", defaultValue: defaultValue)!
+        XCTAssertEqual(age, 30, "Failed to fetch value for key with default value")
+
+        // Test fetching a non-existing key with default value
+        let nonExistingKeyWithDefaultValue: String = "Default"
+        let nonExistingValue: String = get(from: jsonString, key: "salary", defaultValue: nonExistingKeyWithDefaultValue)!
+        XCTAssertEqual(nonExistingValue, nonExistingKeyWithDefaultValue, "Failed to fetch default value for non-existing key")
     }
 
     func testSetJSONValue() {
@@ -74,8 +74,7 @@ final class JsonKitTests: XCTestCase {
     static var allTests = [
         ("testValidJSON", testValidJSON),
         ("testInvalidJSON", testInvalidJSON),
-        ("testGenericParameterValue", testGenericParameterValue),
-        ("testNonGenericParameterValue", testNonGenericParameterValue),
-        
+        ("testGetFromJSON", testGetFromJSON),
+        ("testSetJSONValue", testSetJSONValue)
     ]
 }
